@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ماه شاپینگ؛ فروش آنلاین لباس زنانه و پنجابی در سرپل و سایر ولایات افغانستان.">
+  <meta name="theme-color" content="#6b3044">
+  <title>ماه شاپینگ | MAH SHOPPING</title>
+  <style>
+    :root{--wine:#6b3044;--wine-dark:#4b2030;--cream:#fbf5ef;--sand:#eadbd0;--ink:#2d2528;--muted:#75676b;--white:#fff;--green:#23734e}
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#fff;color:var(--ink);line-height:1.75}
+    a{color:inherit;text-decoration:none} button,input,select{font:inherit}
+    .announcement{background:var(--wine-dark);color:#fff;text-align:center;padding:7px 12px;font-size:13px}
+    header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid #eee}
+    .nav{max-width:1160px;margin:auto;padding:13px 20px;display:flex;align-items:center;gap:18px}
+    .brand{display:flex;align-items:center;gap:10px;min-width:max-content}
+    .logo{width:43px;height:43px;border-radius:50%;display:grid;place-items:center;background:var(--wine);color:#fff;font-family:Georgia,serif;font-size:24px}
+    .brand strong{display:block;color:var(--wine);font-size:18px;line-height:1.2;letter-spacing:.5px}
+    .brand small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+    .navlinks{display:flex;gap:20px;margin-right:auto;font-size:14px}
+    .navlinks a:hover{color:var(--wine)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:11px 18px;background:var(--wine);color:#fff;font-weight:700;cursor:pointer;transition:.2s}
+    .btn:hover{background:var(--wine-dark);transform:translateY(-1px)}
+    .btn.light{background:#fff;color:var(--wine);border:1px solid #e8d8de}
+    .hero{background:linear-gradient(115deg,#f8eee7 0%,#f3e4e0 55%,#e6cdd0 100%);overflow:hidden}
+    .hero-inner{max-width:1160px;margin:auto;padding:56px 20px;display:grid;grid-template-columns:1.02fr .98fr;align-items:center;gap:35px}
+    .eyebrow{color:var(--wine);font-size:13px;font-weight:bold;letter-spacing:.6px}
+    h1{font-size:clamp(32px,4vw,52px);line-height:1.35;margin:10px 0 15px;color:var(--wine-dark)}
+    .hero p{color:#66545a;max-width:500px;margin:0 0 23px}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .hero-art{position:relative;min-height:350px;border-radius:48% 48% 20px 20px;overflow:hidden;background:#d8b9b8;box-shadow:0 20px 45px #5c2b3a22}
+    .hero-art img{width:100%;height:100%;min-height:350px;object-fit:cover;display:block}
+    .hero-tag{position:absolute;bottom:18px;right:18px;background:#fffdf9eF;padding:12px 17px;border-radius:14px;color:var(--wine);font-size:13px;font-weight:bold}
+    .benefits{max-width:1160px;margin:-1px auto 0;padding:18px 20px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .benefit{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #f0e6e2;border-radius:14px;background:#fff}
+    .benefit .ico{font-size:22px}.benefit strong{display:block;font-size:13px}.benefit small{display:block;color:var(--muted);font-size:11px}
+    section{scroll-margin-top:90px}
+    .section{max-width:1160px;margin:auto;padding:45px 20px}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:22px}
+    .section-head h2{margin:0;color:var(--wine-dark);font-size:27px}
+    .section-head p{margin:5px 0 0;color:var(--muted);font-size:13px}
+    .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+    .filter{border:1px solid #e6d8dc;background:#fff;color:var(--wine);padding:8px 14px;border-radius:999px;cursor:pointer;font-size:13px}
+    .filter.active,.filter:hover{background:var(--wine);color:#fff}
+    .products{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+    .product{border:1px solid #eee3e5;border-radius:17px;overflow:hidden;background:#fff;transition:.2s}
+    .product:hover{transform:translateY(-3px);box-shadow:0 12px 28px #54233712}
+    .product-image{position:relative;background:#f7eee9;aspect-ratio:3/4;overflow:hidden}
+    .product-image img{width:100%;height:100%;object-fit:cover;display:block}
+    .pill{position:absolute;top:10px;right:10px;background:#fff;color:var(--wine);font-size:11px;padding:5px 9px;border-radius:999px}
+    .product-info{padding:13px}
+    .product-info h3{font-size:15px;margin:0 0 4px}
+    .meta{color:var(--muted);font-size:12px}
+    .price-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:11px}
+    .price{font-weight:bold;color:var(--wine);font-size:16px}
+    .order-small{border:0;background:#f5e8eb;color:var(--wine);border-radius:10px;padding:8px 10px;font-size:12px;font-weight:bold;cursor:pointer}
+    .empty{display:none;text-align:center;padding:25px;color:var(--muted)}
+    .about{background:var(--cream)}
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}
+    .about-card{background:#fff;border-radius:18px;padding:25px;border:1px solid #efe2dd}
+    .about-card h2{color:var(--wine-dark);margin-top:0}
+    .ticks{list-style:none;padding:0;margin:15px 0 0}
+    .ticks li{padding:6px 0}.ticks li:before{content:"✓";color:var(--green);font-weight:bold;margin-left:9px}
+    .order-box{background:var(--wine-dark);color:#fff;border-radius:20px;padding:25px}
+    .order-box h2{margin-top:0}.order-box p{color:#f0dfe4;font-size:14px}
+    .order-form{display:grid;gap:10px}
+    .order-form input,.order-form select,.order-form textarea{width:100%;padding:12px 13px;border:1px solid #e9dfe1;border-radius:10px;background:#fff;color:var(--ink);outline:none}
+    .order-form textarea{min-height:90px;resize:vertical}
+    .order-form .btn{background:#fff;color:var(--wine-dark);width:100%}
+    .notice{font-size:11px;color:#f0dfe4;margin-top:10px}
+    .faq{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .faq article{border:1px solid #eee3e5;border-radius:14px;padding:17px}
+    .faq h3{font-size:15px;margin:0 0 7px;color:var(--wine)}
+    .faq p{font-size:13px;color:var(--muted);margin:0}
+    footer{background:#2d1d24;color:#f8eef1;padding:30px 20px}
+    .footer-inner{max-width:1160px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+    footer small{color:#d7c2ca}
+    .float-wa{position:fixed;bottom:18px;left:18px;z-index:20;background:#1f9d61;color:#fff;border-radius:999px;padding:12px 16px;box-shadow:0 8px 24px #0002;font-size:13px;font-weight:bold}
+    .admin-note{max-width:1160px;margin:0 auto 20px;padding:0 20px;color:#806a72;font-size:11px}
+    @media(max-width:900px){.products{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-inner{gap:20px}.navlinks{gap:10px}.benefits{grid-template-columns:1fr}.about-grid{grid-template-columns:1fr}}
+    @media(max-width:600px){.nav{padding:10px 14px;gap:10px}.brand strong{font-size:15px}.brand small{font-size:10px}.logo{width:37px;height:37px}.navlinks{display:none}.nav>.btn{margin-right:auto;padding:9px 12px;font-size:12px}.hero-inner{grid-template-columns:1fr;padding:35px 18px}.hero-art,.hero-art img{min-height:250px;max-height:300px}.hero-art{order:-1}.benefits{padding:12px 18px}.section{padding:34px 18px}.section-head{align-items:start;flex-direction:column}.products{gap:11px}.product-info{padding:10px}.product-info h3{font-size:13px}.price{font-size:14px}.order-small{padding:7px;font-size:11px}.faq{grid-template-columns:1fr}.hero h1{font-size:34px}}
+  </style>
+</head>
+<body>
+  <div class="announcement">فروش آنلاین لباس زنانه و پنجابی | ارسال با هماهنگی به سرپل و سایر ولایات</div>
+  <header>
+    <nav class="nav">
+      <a class="brand" href="#home" aria-label="ماه شاپینگ">
+        <span class="logo">م</span>
+        <span><strong>MAH SHOPPING</strong><small>ماه شاپینگ | انتخاب زیبا، خرید مطمئن</small></span>
+      </a>
+      <div class="navlinks">
+        <a href="#products">محصولات</a><a href="#about">درباره ما</a><a href="#order">ثبت سفارش</a><a href="#faq">پرسش‌ها</a>
+      </div>
+      <a class="btn" href="#products">دیدن لباس‌ها</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-inner">
+        <div>
+          <div class="eyebrow">مجموعه جدید ماه شاپینگ</div>
+          <h1>زیبایی در هر انتخاب</h1>
+          <p>مدل‌های منتخب پنجابی، لباس‌های روزمره و مجلسی زنانه؛ با عکس واضح، قیمت مشخص و ثبت سفارش آسان.</p>
+          <div class="hero-actions">
+            <a class="btn" href="#products">مشاهده محصولات</a>
+            <a class="btn light" href="#order">چگونه سفارش بدهم؟</a>
+          </div>
+        </div>
+        <div class="hero-art">
+          <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=85" alt="نمونه لباس زنانه" onerror="this.style.display='none'">
+          <div class="hero-tag">مدل‌های منتخب • خرید مطمئن</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="benefits">
+      <div class="benefit"><span class="ico">👗</span><span><strong>انتخاب مدل‌های متنوع</strong><small>روزمره، میان‌قیمت و مجلسی</small></span></div>
+      <div class="benefit"><span class="ico">📸</span><span><strong>مشخصات روشن</strong><small>قیمت، رنگ و سایز هر محصول</small></span></div>
+      <div class="benefit"><span class="ico">📦</span><span><strong>ارسال با هماهنگی</strong><small>جزئیات قبل از تأیید سفارش</small></span></div>
+    </div>
+
+    <section class="section" id="products">
+      <div class="section-head">
+        <div><h2>محصولات ماه شاپینگ</h2><p>محصولات واقعی و نمونه‌های کاتالوگ ماه شاپینگ؛ قیمت و موجودی هر لباس پیش از سفارش تأیید می‌شود.</p></div>
+      </div>
+      <div class="filters" role="group" aria-label="فیلتر محصولات">
+        <button class="filter active" data-filter="all">همه محصولات</button>
+        <button class="filter" data-filter="daily">روزمره</button>
+        <button class="filter" data-filter="mid">میان‌قیمت</button>
+        <button class="filter" data-filter="party">مجلسی</button>
+      </div>
+      <div class="products" id="productGrid">
+        <article class="product" data-category="mid">
+          <div class="product-image"><img src="images/MS-001.jpg" alt="لباس پنجابی سه‌پارچه زرشکی گل‌دار با چادر خردلی"><span class="pill">میان‌قیمت</span></div>
+          <div class="product-info"><h3>پنجابی سه‌پارچه زرشکی گل‌دار</h3><div class="meta">کد: MS-001 | رنگ: زرشکی و خردلی</div><div class="price-row"><span class="price">۱٬۵۵۰ افغانی</span><button class="order-small" onclick="orderProduct('پنجابی سه‌پارچه زرشکی گل‌دار','MS-001')">سفارش</button></div></div>
+        </article>
+        <article class="product" data-category="daily">
+          <div class="product-image"><img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=700&q=80" alt="نمونه لباس زنانه"><span class="pill">روزمره</span></div>
+          <div class="product-info"><h3>پنجابی ساده و راحت</h3><div class="meta">کد: نمونه-002 | رنگ و سایز: تأیید شود</div><div class="price-row"><span class="price">قیمت: درج شود</span><button class="order-small" onclick="orderProduct('پنجابی ساده و راحت','نمونه-002')">سفارش</button></div></div>
+        </article>
+        <article class="product" data-category="mid">
+          <div class="product-image"><img src="https://images.unsplash.com/photo-1597983073493-88cd35cf93b0?auto=format&fit=crop&w=700&q=80" alt="نمونه لباس زنانه"><span class="pill">میان‌قیمت</span></div>
+          <div class="product-info"><h3>پنجابی گلدوزی ظریف</h3><div class="meta">کد: نمونه-003 | رنگ و سایز: تأیید شود</div><div class="price-row"><span class="price">قیمت: درج شود</span><button class="order-small" onclick="orderProduct('پنجابی گلدوزی ظریف','نمونه-003')">سفارش</button></div></div>
+        </article>
+        <article class="product" data-category="party">
+          <div class="product-image"><img src="https://images.unsplash.com/photo-1610189012906-4c4c8b9f8f0b?auto=format&fit=crop&w=700&q=80" alt="نمونه لباس مجلسی زنانه"><span class="pill">مجلسی</span></div>
+          <div class="product-info"><h3>پنجابی مجلسی کارشده</h3><div class="meta">کد: نمونه-004 | رنگ و سایز: تأیید شود</div><div class="price-row"><span class="price">قیمت: درج شود</span><button class="order-small" onclick="orderProduct('پنجابی مجلسی کارشده','نمونه-004')">سفارش</button></div></div>
+        </article>
+      </div>
+      <p class="empty" id="emptyMessage">در این دسته فعلاً محصولی موجود نیست.</p>
+    </section>
+
+    <section class="about" id="about">
+      <div class="section about-grid">
+        <div class="about-card">
+          <h2>چرا ماه شاپینگ؟</h2>
+          <p>می‌خواهیم خرید آنلاین لباس ساده و قابل اعتماد باشد. مشخصات هر لباس پیش از سفارش با مشتری هماهنگ می‌شود.</p>
+          <ul class="ticks">
+            <li>اعلام قیمت پیش از تأیید سفارش</li>
+            <li>بررسی جنس و دوخت قبل از ارسال</li>
+            <li>هماهنگی رنگ، سایز و موجودی</li>
+            <li>پیگیری سفارش تا تحویل</li>
+          </ul>
+        </div>
+        <div class="order-box" id="order">
+          <h2>ثبت سفارش</h2>
+          <p>فرم را تکمیل کن؛ پیام سفارش در واتساپ آماده می‌شود. برای فعال شدن، شماره واتساپ خود را در تنظیمات پایین فایل وارد کن.</p>
+          <form class="order-form" id="orderForm">
+            <input id="customerName" required placeholder="نام مشتری" aria-label="نام مشتری">
+            <input id="customerPhone" required placeholder="شماره تماس مشتری" aria-label="شماره تماس مشتری">
+            <select id="customerCity" required aria-label="ولایت">
+              <option value="">ولایت / محل تحویل را انتخاب کن</option>
+              <option>سرپل</option><option>کابل</option><option>بلخ</option><option>جوزجان</option><option>فاریاب</option><option>سمنگان</option><option>ولایت دیگر</option>
+            </select>
+            <input id="productCode" placeholder="کد محصول (مثلاً MS-001)" aria-label="کد محصول">
+            <textarea id="orderDetails" placeholder="رنگ، سایز و توضیحات" aria-label="توضیحات سفارش"></textarea>
+            <button class="btn" type="submit">ادامه سفارش در واتساپ</button>
+          </form>
+          <div class="notice">سفارش تا زمانی که موجودی، قیمت و شیوه ارسال تأیید نشود، قطعی نیست.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="section-head"><div><h2>پرسش‌های معمول</h2><p>شرایط دقیق را قبل از آغاز فروش مطابق خدمات واقعی خودت تنظیم کن.</p></div></div>
+      <div class="faq">
+        <article><h3>چگونه سفارش بدهم؟</h3><p>محصول را انتخاب کن و فرم سفارش را بفرست؛ سپس موجودی و قیمت نهایی هماهنگ می‌شود.</p></article>
+        <article><h3>ارسال چگونه انجام می‌شود؟</h3><p>زمان، هزینه و روش ارسال پیش از تأیید سفارش با مشتری هماهنگ می‌شود.</p></article>
+        <article><h3>اگر جنس عیب داشته باشد؟</h3><p>پالیسی تعویض و رسیدگی به جنس معیوب را قبل از انتشار سایت به‌صورت واضح درج کن.</p></article>
+      </div>
+    </section>
+    <div class="admin-note">یادآوری: عکس‌ها، قیمت‌ها، شماره واتساپ، سیاست تعویض و روش ارسال باید پیش از نشر عمومی با معلومات واقعی فروشگاه جایگزین شوند.</div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div><strong>MAH SHOPPING | ماه شاپینگ</strong><br><small>انتخاب زیبا، خرید مطمئن</small></div>
+      <div><small>فروش آنلاین لباس زنانه و پنجابی • سرپل، افغانستان</small><br><small>© <span id="year"></span> ماه شاپینگ</small></div>
+    </div>
+  </footer>
+  <a class="float-wa" id="floatWhatsApp" href="#order">سفارش / تماس</a>
+
+  <script>
+    // مهم: شماره واتساپ فروشگاه را به شکل کد کشور + شماره، فقط با ارقام وارد کن.
+    // مثال ساختاری افغانستان: 937XXXXXXXX (بدون + و بدون صفر ابتدایی)
+    const WHATSAPP_NUMBER = "93730990368";
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const filterButtons = document.querySelectorAll(".filter");
+    const products = document.querySelectorAll(".product");
+    const emptyMessage = document.getElementById("emptyMessage");
+    filterButtons.forEach(btn => btn.addEventListener("click", () => {
+      filterButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      let visible = 0;
+      products.forEach(card => {
+        const show = btn.dataset.filter === "all" || card.dataset.category === btn.dataset.filter;
+        card.style.display = show ? "" : "none";
+        if (show) visible++;
+      });
+      emptyMessage.style.display = visible ? "none" : "block";
+    }));
+
+    function openWhatsApp(message) {
+      if (WHATSAPP_NUMBER === "SET_YOUR_WHATSAPP_NUMBER") {
+        alert("برای فعال شدن سفارش واتساپی، شماره واتساپ فروشگاه را در فایل index.html در بخش WHATSAPP_NUMBER وارد کن.");
+        document.getElementById("order").scrollIntoView({behavior:"smooth"});
+        return;
+      }
+      const url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message);
+      window.open(url, "_blank", "noopener");
+    }
+    function orderProduct(name, code) {
+      document.getElementById("productCode").value = code;
+      document.getElementById("orderDetails").value = "محصول: " + name;
+      document.getElementById("order").scrollIntoView({behavior:"smooth"});
+      document.getElementById("customerName").focus({preventScroll:true});
+    }
+    document.getElementById("orderForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("customerName").value.trim();
+      const phone = document.getElementById("customerPhone").value.trim();
+      const city = document.getElementById("customerCity").value;
+      const code = document.getElementById("productCode").value.trim() || "مشخص نشده";
+      const details = document.getElementById("orderDetails").value.trim() || "توضیحی درج نشده";
+      const message = "سلام ماه شاپینگ، می‌خواهم سفارش ثبت کنم.%0A".replace("%0A","\n") +
+        "نام: " + name + "\nشماره تماس: " + phone + "\nمحل تحویل: " + city +
+        "\nکد محصول: " + code + "\nجزئیات: " + details;
+      openWhatsApp(message);
+    });
+    document.getElementById("floatWhatsApp").addEventListener("click", function(e) {
+      if (WHATSAPP_NUMBER === "SET_YOUR_WHATSAPP_NUMBER") {
+        e.preventDefault();
+        alert("شماره واتساپ فروشگاه هنوز تنظیم نشده است.");
+      } else {
+        e.preventDefault();
+        openWhatsApp("سلام ماه شاپینگ، درباره محصولات و ثبت سفارش معلومات می‌خواهم.");
+      }
+    });
+  </script>
+</body>
+</html>
