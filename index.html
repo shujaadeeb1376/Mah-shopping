@@ -10,7 +10,7 @@
     :root{--wine:#6b3044;--wine-dark:#4b2030;--cream:#fbf5ef;--sand:#eadbd0;--ink:#2d2528;--muted:#75676b;--white:#fff;--green:#23734e}
     *{box-sizing:border-box} html{scroll-behavior:smooth}
     body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#fff;color:var(--ink);line-height:1.75}
-    a{color:inherit;text-decoration:none} button,input,select{font:inherit}
+    a{color:inherit;text-decoration:none} button,input,select,textarea{font:inherit}
     .announcement{background:var(--wine-dark);color:#fff;text-align:center;padding:7px 12px;font-size:13px}
     header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid #eee}
     .nav{max-width:1160px;margin:auto;padding:13px 20px;display:flex;align-items:center;gap:18px}
@@ -55,7 +55,7 @@
     .price-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:11px}
     .price{font-weight:bold;color:var(--wine);font-size:16px}
     .order-small{border:0;background:#f5e8eb;color:var(--wine);border-radius:10px;padding:8px 10px;font-size:12px;font-weight:bold;cursor:pointer}
-    .empty{display:none;text-align:center;padding:25px;color:var(--muted)}
+    .empty{text-align:center;padding:25px;color:var(--muted)}
     .about{background:var(--cream)}
     .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}
     .about-card{background:#fff;border-radius:18px;padding:25px;border:1px solid #efe2dd}
@@ -124,7 +124,7 @@
 
     <section class="section" id="products">
       <div class="section-head">
-        <div><h2>محصولات ماه شاپینگ</h2><p>محصولات واقعی و نمونه‌های کاتالوگ ماه شاپینگ؛ قیمت و موجودی هر لباس پیش از سفارش تأیید می‌شود.</p></div>
+        <div><h2>محصولات ماه شاپینگ</h2><p>محصولات موجود فروشگاه با عکس، قیمت و مشخصات؛ موجودی پیش از سفارش تأیید می‌شود.</p></div>
       </div>
       <div class="filters" role="group" aria-label="فیلتر محصولات">
         <button class="filter active" data-filter="all">همه محصولات</button>
@@ -132,25 +132,8 @@
         <button class="filter" data-filter="mid">میان‌قیمت</button>
         <button class="filter" data-filter="party">مجلسی</button>
       </div>
-      <div class="products" id="productGrid">
-        <article class="product" data-category="mid">
-          <div class="product-image"><img src="images/MS-001.jpg" alt="لباس پنجابی سه‌پارچه زرشکی گل‌دار با چادر خردلی"><span class="pill">میان‌قیمت</span></div>
-          <div class="product-info"><h3>پنجابی سه‌پارچه زرشکی گل‌دار</h3><div class="meta">کد: MS-001 | رنگ: زرشکی و خردلی</div><div class="price-row"><span class="price">۱٬۵۵۰ افغانی</span><button class="order-small" onclick="orderProduct('پنجابی سه‌پارچه زرشکی گل‌دار','MS-001')">سفارش</button></div></div>
-        </article>
-        <article class="product" data-category="daily">
-          <div class="product-image"><img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=700&q=80" alt="نمونه لباس زنانه"><span class="pill">روزمره</span></div>
-          <div class="product-info"><h3>پنجابی ساده و راحت</h3><div class="meta">کد: نمونه-002 | رنگ و سایز: تأیید شود</div><div class="price-row"><span class="price">قیمت: درج شود</span><button class="order-small" onclick="orderProduct('پنجابی ساده و راحت','نمونه-002')">سفارش</button></div></div>
-        </article>
-        <article class="product" data-category="mid">
-          <div class="product-image"><img src="https://images.unsplash.com/photo-1597983073493-88cd35cf93b0?auto=format&fit=crop&w=700&q=80" alt="نمونه لباس زنانه"><span class="pill">میان‌قیمت</span></div>
-          <div class="product-info"><h3>پنجابی گلدوزی ظریف</h3><div class="meta">کد: نمونه-003 | رنگ و سایز: تأیید شود</div><div class="price-row"><span class="price">قیمت: درج شود</span><button class="order-small" onclick="orderProduct('پنجابی گلدوزی ظریف','نمونه-003')">سفارش</button></div></div>
-        </article>
-        <article class="product" data-category="party">
-          <div class="product-image"><img src="https://images.unsplash.com/photo-1610189012906-4c4c8b9f8f0b?auto=format&fit=crop&w=700&q=80" alt="نمونه لباس مجلسی زنانه"><span class="pill">مجلسی</span></div>
-          <div class="product-info"><h3>پنجابی مجلسی کارشده</h3><div class="meta">کد: نمونه-004 | رنگ و سایز: تأیید شود</div><div class="price-row"><span class="price">قیمت: درج شود</span><button class="order-small" onclick="orderProduct('پنجابی مجلسی کارشده','نمونه-004')">سفارش</button></div></div>
-        </article>
-      </div>
-      <p class="empty" id="emptyMessage">در این دسته فعلاً محصولی موجود نیست.</p>
+      <div class="products" id="productGrid"></div>
+      <p class="empty" id="emptyMessage" style="display:none">در این دسته فعلاً محصولی موجود نیست.</p>
     </section>
 
     <section class="about" id="about">
@@ -167,7 +150,7 @@
         </div>
         <div class="order-box" id="order">
           <h2>ثبت سفارش</h2>
-          <p>فرم را تکمیل کن؛ پیام سفارش در واتساپ آماده می‌شود. برای فعال شدن، شماره واتساپ خود را در تنظیمات پایین فایل وارد کن.</p>
+          <p>فرم را تکمیل کن؛ پیام سفارش در واتساپ آماده می‌شود.</p>
           <form class="order-form" id="orderForm">
             <input id="customerName" required placeholder="نام مشتری" aria-label="نام مشتری">
             <input id="customerPhone" required placeholder="شماره تماس مشتری" aria-label="شماره تماس مشتری">
@@ -203,43 +186,28 @@
   </footer>
   <a class="float-wa" id="floatWhatsApp" href="#order">سفارش / تماس</a>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // مهم: شماره واتساپ فروشگاه را به شکل کد کشور + شماره، فقط با ارقام وارد کن.
-    // مثال ساختاری افغانستان: 937XXXXXXXX (بدون + و بدون صفر ابتدایی)
     const WHATSAPP_NUMBER = "93730990368";
+
+    const SUPABASE_URL = "https://zzhldihcsluaqrorepyk.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_AG8BoMnbpBkpyn-ZuxrcaA_CJx5HIOo";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    const filterButtons = document.querySelectorAll(".filter");
-    const products = document.querySelectorAll(".product");
-    const emptyMessage = document.getElementById("emptyMessage");
-    filterButtons.forEach(btn => btn.addEventListener("click", () => {
-      filterButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      let visible = 0;
-      products.forEach(card => {
-        const show = btn.dataset.filter === "all" || card.dataset.category === btn.dataset.filter;
-        card.style.display = show ? "" : "none";
-        if (show) visible++;
-      });
-      emptyMessage.style.display = visible ? "none" : "block";
-    }));
-
     function openWhatsApp(message) {
-      if (WHATSAPP_NUMBER === "SET_YOUR_WHATSAPP_NUMBER") {
-        alert("برای فعال شدن سفارش واتساپی، شماره واتساپ فروشگاه را در فایل index.html در بخش WHATSAPP_NUMBER وارد کن.");
-        document.getElementById("order").scrollIntoView({behavior:"smooth"});
-        return;
-      }
       const url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message);
       window.open(url, "_blank", "noopener");
     }
+
     function orderProduct(name, code) {
-      document.getElementById("productCode").value = code;
-      document.getElementById("orderDetails").value = "محصول: " + name;
+      document.getElementById("productCode").value = code || "";
+      document.getElementById("orderDetails").value = "محصول: " + (name || "");
       document.getElementById("order").scrollIntoView({behavior:"smooth"});
       document.getElementById("customerName").focus({preventScroll:true});
     }
+
     document.getElementById("orderForm").addEventListener("submit", function(e) {
       e.preventDefault();
       const name = document.getElementById("customerName").value.trim();
@@ -247,45 +215,136 @@
       const city = document.getElementById("customerCity").value;
       const code = document.getElementById("productCode").value.trim() || "مشخص نشده";
       const details = document.getElementById("orderDetails").value.trim() || "توضیحی درج نشده";
-      const message = "سلام ماه شاپینگ، می‌خواهم سفارش ثبت کنم.%0A".replace("%0A","\n") +
+      const message = "سلام ماه شاپینگ، می‌خواهم سفارش ثبت کنم.\n" +
         "نام: " + name + "\nشماره تماس: " + phone + "\nمحل تحویل: " + city +
         "\nکد محصول: " + code + "\nجزئیات: " + details;
       openWhatsApp(message);
     });
+
     document.getElementById("floatWhatsApp").addEventListener("click", function(e) {
-      if (WHATSAPP_NUMBER === "SET_YOUR_WHATSAPP_NUMBER") {
-        e.preventDefault();
-        alert("شماره واتساپ فروشگاه هنوز تنظیم نشده است.");
-      } else {
-        e.preventDefault();
-        openWhatsApp("سلام ماه شاپینگ، درباره محصولات و ثبت سفارش معلومات می‌خواهم.");
-      }
+      e.preventDefault();
+      openWhatsApp("سلام ماه شاپینگ، درباره محصولات و ثبت سفارش معلومات می‌خواهم.");
     });
+
+    function safeText(value) {
+      return value == null ? "" : String(value);
+    }
+
+    function getCategoryKey(category) {
+      const value = safeText(category).toLowerCase();
+      if (["daily","روزمره"].includes(value)) return "daily";
+      if (["mid","میان‌قیمت","میان قیمت","پنجابی"].includes(value)) return "mid";
+      if (["party","مجلسی"].includes(value)) return "party";
+      return "other";
+    }
+
+    function getCategoryLabel(category) {
+      const key = getCategoryKey(category);
+      if (key === "daily") return "روزمره";
+      if (key === "mid") return "میان‌قیمت";
+      if (key === "party") return "مجلسی";
+      return safeText(category) || "محصول";
+    }
+
+    function makeProductCard(product) {
+      const card = document.createElement("article");
+      card.className = "product";
+      card.dataset.category = getCategoryKey(product.category);
+
+      const imageWrap = document.createElement("div");
+      imageWrap.className = "product-image";
+      const img = document.createElement("img");
+      img.src = product.image_url || "https://placehold.co/600x800?text=MAH+SHOPPING";
+      img.alt = safeText(product.name) || "محصول ماه شاپینگ";
+      img.loading = "lazy";
+      img.onerror = function() { this.src = "https://placehold.co/600x800?text=MAH+SHOPPING"; };
+      const pill = document.createElement("span");
+      pill.className = "pill";
+      pill.textContent = getCategoryLabel(product.category);
+      imageWrap.append(img, pill);
+
+      const info = document.createElement("div");
+      info.className = "product-info";
+      const title = document.createElement("h3");
+      title.textContent = safeText(product.name);
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.textContent = "کد: " + safeText(product.code) + " | رنگ: " + (safeText(product.color) || "تعیین نشده");
+
+      const row = document.createElement("div");
+      row.className = "price-row";
+      const price = document.createElement("span");
+      price.className = "price";
+      price.textContent = product.price !== null && product.price !== undefined && product.price !== ""
+        ? Number(product.price).toLocaleString("fa-AF") + " افغانی"
+        : "قیمت تماس بگیرید";
+      const button = document.createElement("button");
+      button.className = "order-small";
+      button.type = "button";
+      button.textContent = "سفارش";
+      button.addEventListener("click", () => orderProduct(product.name, product.code));
+
+      row.append(price, button);
+      info.append(title, meta, row);
+      card.append(imageWrap, info);
+      return card;
+    }
+
+    async function loadProducts() {
+      const grid = document.getElementById("productGrid");
+      const empty = document.getElementById("emptyMessage");
+      grid.innerHTML = "<p>در حال دریافت محصولات...</p>";
+
+      const { data, error } = await supabaseClient
+        .from("products")
+        .select("id,name,code,price,description,image_url,color,category,stock,is_active")
+        .eq("is_active", true)
+        .order("id", { ascending: false });
+
+      if (error) {
+        grid.innerHTML = "";
+        empty.style.display = "block";
+        empty.textContent = "بارگذاری محصولات موفق نشد. لطفاً بعداً دوباره تلاش کنید.";
+        console.error("Supabase products error:", error);
+        return;
+      }
+
+      grid.innerHTML = "";
+      if (!data || data.length === 0) {
+        empty.style.display = "block";
+        empty.textContent = "در حال حاضر محصول فعالی برای نمایش موجود نیست.";
+        return;
+      }
+
+      empty.style.display = "none";
+      data.forEach(product => grid.appendChild(makeProductCard(product)));
+      applyProductFilter("all");
+    }
+
+    function applyProductFilter(filter) {
+      const cards = document.querySelectorAll("#productGrid .product");
+      const empty = document.getElementById("emptyMessage");
+      let visible = 0;
+
+      cards.forEach(card => {
+        const show = filter === "all" || card.dataset.category === filter;
+        card.style.display = show ? "" : "none";
+        if (show) visible++;
+      });
+
+      empty.style.display = visible ? "none" : "block";
+      if (!visible) empty.textContent = "در این دسته فعلاً محصولی موجود نیست.";
+    }
+
+    document.querySelectorAll(".filter").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".filter").forEach(item => item.classList.remove("active"));
+        button.classList.add("active");
+        applyProductFilter(button.dataset.filter);
+      });
+    });
+
+    loadProducts();
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-  const SUPABASE_URL = "https://zzhldihcsluaqrorepyk.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_AG8BoMnbpBkpyn-ZuxrcaA_CJx5HIOo";
-
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
-  console.log("MAH SHOPPING connected to Supabase");
-  (async function testProductsConnection() {
-  const { data, error } = await supabaseClient
-    .from("products")
-    .select("id, name, price")
-    .eq("code", "MS-001");
-
-  if (error) {
-    alert("خطای اتصال: " + error.message);
-  } else {
-    alert("اتصال موفق! تعداد محصولات پیدا شده: " + data.length);
-  }
-})();
-</script>
 </body>
 </html>
