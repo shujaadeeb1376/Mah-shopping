@@ -262,5 +262,17 @@
       }
     });
   </script>
-</body>
+</body><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const SUPABASE_URL = "https://zzhldihcsluaqrorepyk.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_AG8BoMnbpBkpyn-ZuxrcaA_CJx5HIOo";
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  console.log("MAH SHOPPING connected to Supabase");
+</script>
 </html>
