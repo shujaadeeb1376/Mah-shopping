@@ -274,6 +274,18 @@
   );
 
   console.log("MAH SHOPPING connected to Supabase");
+  (async function testProductsConnection() {
+  const { data, error } = await supabaseClient
+    .from("products")
+    .select("id, name, price")
+    .eq("code", "MS-001");
+
+  if (error) {
+    alert("خطای اتصال: " + error.message);
+  } else {
+    alert("اتصال موفق! تعداد محصولات پیدا شده: " + data.length);
+  }
+})();
 </script>
 </body>
 </html>
