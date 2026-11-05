@@ -17,7 +17,6 @@ h3{margin-top:0;color:#542d3b}
 input,textarea,select,button{width:100%;padding:12px;margin:7px 0;border:1px solid #ddd;border-radius:8px;font:inherit}
 button{background:#542d3b;color:white;border:0;font-weight:bold;cursor:pointer}
 button.secondary{background:#777}
-button.danger{background:#a33}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .product{border:1px solid #eee;border-radius:10px;padding:12px;margin:10px 0}
 .product img{width:90px;height:100px;object-fit:cover;border-radius:8px;float:right;margin-left:12px}
@@ -91,7 +90,7 @@ const $ = id => document.getElementById(id);
 function msg(t){$("message").textContent=t;}
 
 async function login(){
- const {data,error}=await db.auth.signInWithPassword({
+ const {error}=await db.auth.signInWithPassword({
   email:$("email").value.trim(),
   password:$("password").value
  });
@@ -127,7 +126,7 @@ async function checkSession(){
 async function loadProducts(){
  $("products").textContent="در حال بارگذاری...";
  const {data,error}=await db.from("products")
-  .select("*").order("Id",{ascending:false});
+  .select("*").order("id",{ascending:false});
  if(error){$("products").textContent="خطا: "+error.message;return;}
  if(!data.length){$("products").textContent="هنوز محصولی ثبت نشده است.";return;}
  $("products").innerHTML="";
@@ -186,7 +185,7 @@ async function saveProduct(){
  if(imageUrl)values.image_url=imageUrl;
  let result;
  if(id){
-  result=await db.from("products").update(values).eq("Id",Number(id));
+  result=await db.from("products").update(values).eq("id",Number(id));
  }else{
   result=await db.from("products").insert(values);
  }
@@ -197,7 +196,7 @@ async function saveProduct(){
 }
 
 function editProduct(p){
- $("productId").value=p.Id;
+ $("productId").value=p.id;
  $("name").value=p.Name||"";
  $("code").value=p.code||"";
  $("price").value=p.Price||"";
@@ -211,7 +210,7 @@ function editProduct(p){
 
 async function toggleProduct(p){
  const {error}=await db.from("products")
-  .update({is_active:!p.is_active}).eq("Id",p.Id);
+  .update({is_active:!p.is_active}).eq("id",p.id);
  if(error){msg("خطا: "+error.message);return;}
  msg("وضعیت محصول تغییر کرد.");
  await loadProducts();
