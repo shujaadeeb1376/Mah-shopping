@@ -12,14 +12,19 @@ main{max-width:750px;margin:25px auto;background:white;padding:22px;border-radiu
 h2{color:#762d45}
 input,textarea,select,button{box-sizing:border-box;width:100%;padding:12px;margin:7px 0 14px;border:1px solid #ddd;border-radius:8px;font-size:15px}
 button{background:#762d45;color:white;border:0;cursor:pointer;font-weight:bold}
+button:disabled{opacity:.5;cursor:not-allowed}
 button.secondary{background:#777}
 button.danger{background:#a33}
+button.stock-btn{background:#23734e}
 .product{border:1px solid #eee;padding:12px;margin:12px 0;border-radius:10px}
 .product img{width:90px;height:90px;object-fit:cover;border-radius:8px}
 .row{display:flex;gap:10px;align-items:center}
 .row button{width:auto;flex:1}
 #message{padding:10px;border-radius:8px;white-space:pre-wrap}
 .hidden{display:none}
+.stock-status{font-weight:bold}
+.stock-zero{color:#a00}
+.stock-positive{color:#176b35}
 </style>
 </head>
 <body>
@@ -35,7 +40,7 @@ button.danger{background:#a33}
 
 <section id="panel" class="hidden">
 <div class="row">
-<h3>افزودن محصول جدید</h3>
+<h3>مدیریت محصولات</h3>
 <button class="secondary" onclick="logout()">خروج</button>
 </div>
 
@@ -49,10 +54,10 @@ button.danger{background:#a33}
 <input id="code" placeholder="MS-002">
 
 <label>قیمت به افغانی</label>
-<input id="price" type="number" min="0" required>
+<input id="price" type="number" min="0" step="1" required>
 
 <label>تعداد موجودی</label>
-<input id="stock" type="number" min="0" value="1" required>
+<input id="stock" type="number" min="0" step="1" value="1" required>
 
 <label>توضیحات محصول</label>
 <textarea id="description" rows="3"></textarea>
@@ -90,29 +95,39 @@ const ADMIN_UID = "3b7aba09-b373-4308-b1c0-4b2afc1f128e";
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = id => document.getElementById(id);
 
-function message(text, error=false){
-  $("message").textContent = text;
-  $("message").style.color = error ? "#a00" : "#176b35";
+function message(text,error=false){
+  $("message").textContent=text;
+  $("message").style.color=error?"#a00":"#176b35";
 }
 
 async function login(){
-  const email = $("email").value.trim();
-  const password = $("password").value;
-  if(!email || !password){ alert("ایمیل و رمز عبور را وارد کنید."); return; }
+  const email=$("email").value.trim();
+  const password=$("password").value;
 
-  $("loginBtn").disabled = true;
-  $("loginBtn").textContent = "در حال ورود...";
+  if(!email||!password){
+    alert("ایمیل و رمز عبور را وارد کنید.");
+    return;
+  }
 
-  const {data,error} = await db.auth.signInWithPassword({email,password});
-  $("loginBtn").disabled = false;
-  $("loginBtn").textContent = "ورود";
+  $("loginBtn").disabled=true;
+  $("loginBtn").textContent="در حال ورود...";
 
-  if(error){ alert("خطا در ورود: " + error.message); return; }
-  if(data.user.id !== ADMIN_UID){
+  const {data,error}=await db.auth.signInWithPassword({email,password});
+
+  $("loginBtn").disabled=false;
+  $("loginBtn").textContent="ورود";
+
+  if(error){
+    alert("خطا در ورود: "+error.message);
+    return;
+  }
+
+  if(data.user.id!==ADMIN_UID){
     await db.auth.signOut();
     alert("این حساب اجازه مدیریت ندارد.");
     return;
   }
+
   showPanel();
 }
 
@@ -130,160 +145,259 @@ async function logout(){
 
 function clearForm(){
   $("productForm").reset();
-  $("productId").value = "";
-  $("stock").value = 1;
-  $("saveBtn").textContent = "ذخیره محصول";
+  $("productId").value="";
+  $("stock").value=1;
+  $("saveBtn").textContent="ذخیره محصول";
   message("");
 }
 
 async function loadProducts(){
-  $("products").textContent = "در حال دریافت محصولات...";
-  const {data,error} = await db.from("products")
+  $("products").textContent="در حال دریافت محصولات...";
+
+  const {data,error}=await db.from("products")
     .select("*").order("id",{ascending:false});
 
   if(error){
-    $("products").textContent = "خطا در دریافت محصولات: " + error.message;
+    $("products").textContent="خطا در دریافت محصولات: "+error.message;
     return;
   }
 
-  $("products").innerHTML = "";
+  $("products").innerHTML="";
+
   if(!data.length){
-    $("products").textContent = "هنوز محصولی ثبت نشده است.";
+    $("products").textContent="هنوز محصولی ثبت نشده است.";
     return;
   }
 
   data.forEach(p=>{
-    const div = document.createElement("div");
-    div.className = "product";
+    const div=document.createElement("div");
+    div.className="product";
 
-    const img = document.createElement("img");
-    if(p.image_url) img.src = p.image_url;
-    img.alt = p.name || "محصول";
+    const img=document.createElement("img");
+    if(p.image_url) img.src=p.image_url;
+    img.alt=p.name||"محصول";
 
-    const title = document.createElement("strong");
-    title.textContent = p.name || "بدون نام";
+    const title=document.createElement("strong");
+    title.textContent=p.name||"بدون نام";
 
-    const details = document.createElement("p");
-    details.textContent = "کد: " + (p.code || "-") +
-      " | قیمت: " + (p.price ?? "-") + " افغانی" +
-      " | موجودی: " + (p.stock ?? 0) +
-      " | وضعیت: " + (p.is_active ? "فعال" : "غیرفعال");
+    const details=document.createElement("p");
+    details.textContent=
+      "کد: "+(p.code||"-")+
+      " | قیمت: "+(p.price??"-")+" افغانی";
 
-    const edit = document.createElement("button");
-    edit.textContent = "ویرایش";
-    edit.onclick = ()=>editProduct(p.id);
+    const stock=document.createElement("p");
+    stock.className="stock-status "+(Number(p.stock)>0?"stock-positive":"stock-zero");
+    stock.textContent="موجودی فعلی: "+(p.stock??0)+" عدد";
 
-    const toggle = document.createElement("button");
-    toggle.className = "danger";
-    toggle.textContent = p.is_active ? "غیرفعال‌سازی" : "فعال‌سازی";
-    toggle.onclick = ()=>toggleProduct(p);
+    const status=document.createElement("p");
+    status.textContent="وضعیت: "+(p.is_active?"فعال":"غیرفعال");
 
-    div.append(img,title,details,edit,toggle);
+    const edit=document.createElement("button");
+    edit.textContent="ویرایش محصول";
+    edit.onclick=()=>editProduct(p.id);
+
+    const deduct=document.createElement("button");
+    deduct.className="stock-btn";
+    deduct.textContent="کاهش موجودی پس از فروش";
+    deduct.disabled=Number(p.stock)<=0;
+    deduct.onclick=()=>deductStock(p);
+
+    const toggle=document.createElement("button");
+    toggle.className="danger";
+    toggle.textContent=p.is_active?"غیرفعال‌سازی":"فعال‌سازی";
+    toggle.onclick=()=>toggleProduct(p);
+
+    div.append(img,title,details,stock,status,edit,deduct,toggle);
     $("products").appendChild(div);
   });
 }
 
 async function editProduct(id){
-  const {data,error} = await db.from("products")
+  const {data,error}=await db.from("products")
     .select("*").eq("id",id).single();
 
-  if(error){ message("خطا در دریافت محصول: "+error.message,true); return; }
+  if(error){
+    message("خطا در دریافت محصول: "+error.message,true);
+    return;
+  }
 
-  $("productId").value = data.id;
-  $("name").value = data.name || "";
-  $("code").value = data.code || "";
-  $("price").value = data.price ?? "";
-  $("stock").value = data.stock ?? 0;
-  $("description").value = data.description || "";
-  $("color").value = data.color || "";
-  $("category").value = data.category || "پنجابی";
-  $("image").value = "";
-  $("saveBtn").textContent = "ذخیره تغییرات";
+  $("productId").value=data.id;
+  $("name").value=data.name||"";
+  $("code").value=data.code||"";
+  $("price").value=data.price??"";
+  $("stock").value=data.stock??0;
+  $("description").value=data.description||"";
+  $("color").value=data.color||"";
+  $("category").value=data.category||"پنجابی";
+  $("image").value="";
+  $("saveBtn").textContent="ذخیره تغییرات";
+
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-$("productForm").addEventListener("submit", async e=>{
-  e.preventDefault();
-  const {data:{user}} = await db.auth.getUser();
+async function deductStock(p){
+  const currentStock=Number(p.stock)||0;
 
-  if(!user || user.id !== ADMIN_UID){
+  if(currentStock<=0){
+    alert("این محصول موجودی ندارد.");
+    return;
+  }
+
+  const answer=prompt(
+    "محصول: "+p.name+
+    "\nموجودی فعلی: "+currentStock+
+    "\n\nچند عدد فروخته شده است؟"
+  );
+
+  if(answer===null) return;
+
+  const quantity=Number(answer);
+
+  if(!Number.isInteger(quantity)||quantity<1){
+    alert("لطفاً تعداد صحیح و بیشتر از صفر وارد کنید.");
+    return;
+  }
+
+  if(quantity>currentStock){
+    alert("تعداد فروش نمی‌تواند بیشتر از موجودی باشد.");
+    return;
+  }
+
+  const newStock=currentStock-quantity;
+
+  const confirmed=confirm(
+    "موجودی جدید این محصول "+newStock+" عدد خواهد شد.\nآیا تأیید می‌کنید؟"
+  );
+
+  if(!confirmed) return;
+
+  const {data,error}=await db.from("products")
+    .update({stock:newStock})
+    .eq("id",p.id)
+    .eq("stock",currentStock)
+    .select();
+
+  if(error){
+    message("خطا در کاهش موجودی: "+error.message,true);
+    return;
+  }
+
+  if(!data||data.length===0){
+    message("موجودی تغییر کرده است یا اطلاعات تازه نیست. فهرست را تازه کنید.",true);
+    await loadProducts();
+    return;
+  }
+
+  message(
+    "موجودی با موفقیت کاهش یافت.\n"+
+    "محصول: "+p.name+
+    "\nموجودی جدید: "+newStock+" عدد"
+  );
+
+  await loadProducts();
+}
+
+$("productForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  const {data:{user}}=await db.auth.getUser();
+
+  if(!user||user.id!==ADMIN_UID){
     message("نشست مدیر معتبر نیست؛ دوباره وارد شوید.",true);
     return;
   }
 
-  $("saveBtn").disabled = true;
-  $("saveBtn").textContent = "در حال ذخیره...";
+  $("saveBtn").disabled=true;
+  $("saveBtn").textContent="در حال ذخیره...";
 
   try{
-    let imageUrl = null;
-    const file = $("image").files[0];
+    let imageUrl=null;
+    const file=$("image").files[0];
 
     if(file){
-      const ext = file.name.split(".").pop().toLowerCase();
-      const filePath = "products/" + Date.now() + "." + ext;
-      const {error:uploadError} = await db.storage
-        .from("product-images").upload(filePath,file,{upsert:false});
+      const ext=file.name.split(".").pop().toLowerCase();
+      const filePath="products/"+Date.now()+"."+ext;
 
-      if(uploadError) throw new Error("خطا در بارگذاری عکس: "+uploadError.message);
+      const {error:uploadError}=await db.storage
+        .from("product-images")
+        .upload(filePath,file,{upsert:false});
 
-      const {data:urlData} = db.storage
+      if(uploadError)
+        throw new Error("خطا در بارگذاری عکس: "+uploadError.message);
+
+      const {data:urlData}=db.storage
         .from("product-images").getPublicUrl(filePath);
-      imageUrl = urlData.publicUrl;
+
+      imageUrl=urlData.publicUrl;
     }
 
-    const values = {
-      name: $("name").value.trim(),
-      code: $("code").value.trim(),
-      price: Number($("price").value),
-      stock: Number($("stock").value),
-      description: $("description").value.trim(),
-      color: $("color").value.trim(),
-      category: $("category").value,
-      is_active: true
+    const values={
+      name:$("name").value.trim(),
+      code:$("code").value.trim(),
+      price:Number($("price").value),
+      stock:Number($("stock").value),
+      description:$("description").value.trim(),
+      color:$("color").value.trim(),
+      category:$("category").value,
+      is_active:true
     };
 
-    if(!values.name || !Number.isFinite(values.price) || values.price < 0)
+    if(!values.name||!Number.isFinite(values.price)||values.price<0)
       throw new Error("نام و قیمت معتبر وارد کنید.");
 
-    if(imageUrl) values.image_url = imageUrl;
+    if(!Number.isInteger(values.stock)||values.stock<0)
+      throw new Error("موجودی باید عدد صحیح و صفر یا بیشتر باشد.");
 
-    const id = $("productId").value;
+    if(imageUrl) values.image_url=imageUrl;
+
+    const id=$("productId").value;
     let result;
 
     if(id){
-      result = await db.from("products").update(values).eq("id",Number(id)).select();
+      result=await db.from("products")
+        .update(values).eq("id",Number(id)).select();
     }else{
-      result = await db.from("products").insert(values).select();
+      result=await db.from("products")
+        .insert(values).select();
     }
 
     if(result.error) throw result.error;
-    if(!result.data || !result.data.length)
+
+    if(!result.data||!result.data.length)
       throw new Error("ثبت تأیید نشد؛ دسترسی دیتابیس را بررسی کنید.");
 
-    message(id ? "محصول با موفقیت ویرایش شد." : "محصول جدید با موفقیت ثبت شد.");
+    message(id?"محصول با موفقیت ویرایش شد.":"محصول جدید با موفقیت ثبت شد.");
+
     clearForm();
     await loadProducts();
 
   }catch(error){
-    message("عملیات انجام نشد: " + (error.message || String(error)),true);
+    message("عملیات انجام نشد: "+(error.message||String(error)),true);
   }finally{
-    $("saveBtn").disabled = false;
-    $("saveBtn").textContent = $("productId").value ? "ذخیره تغییرات" : "ذخیره محصول";
+    $("saveBtn").disabled=false;
+    $("saveBtn").textContent=$("productId").value?"ذخیره تغییرات":"ذخیره محصول";
   }
 });
 
 async function toggleProduct(p){
-  const {error} = await db.from("products")
+  const {error}=await db.from("products")
     .update({is_active:!p.is_active}).eq("id",p.id);
 
-  if(error){ message("خطا: "+error.message,true); return; }
+  if(error){
+    message("خطا: "+error.message,true);
+    return;
+  }
+
   message("وضعیت محصول تغییر کرد.");
   await loadProducts();
 }
 
 (async()=>{
-  const {data:{session}} = await db.auth.getSession();
-  if(session && session.user.id === ADMIN_UID) showPanel();
+  const {data:{session}}=await db.auth.getSession();
+
+  if(session&&session.user.id===ADMIN_UID){
+    showPanel();
+  }
 })();
 </script>
 </body>
