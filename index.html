@@ -52,9 +52,12 @@ section{scroll-margin-top:90px}
 .pill{position:absolute;top:10px;right:10px;background:#fff;color:var(--wine);font-size:11px;padding:5px 9px;border-radius:999px}
 .product-info{padding:13px}.product-info h3{font-size:15px;margin:0 0 4px}
 .meta{color:var(--muted);font-size:12px}
+.stock-label{font-size:12px;margin-top:7px;font-weight:bold;color:var(--green)}
+.stock-label.sold-out{color:#b3261e}
 .price-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:11px}
 .price{font-weight:bold;color:var(--wine);font-size:16px}
 .order-small{border:0;background:#f5e8eb;color:var(--wine);border-radius:10px;padding:8px 10px;font-size:12px;font-weight:bold;cursor:pointer}
+.order-small:disabled{background:#eee;color:#888;cursor:not-allowed;opacity:.8}
 .empty{text-align:center;padding:25px;color:var(--muted)}
 .about{background:var(--cream)}
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}
@@ -68,6 +71,7 @@ section{scroll-margin-top:90px}
 .order-form input,.order-form select,.order-form textarea{width:100%;padding:12px 13px;border:1px solid #e9dfe1;border-radius:10px;background:#fff;color:var(--ink);outline:none}
 .order-form textarea{min-height:90px;resize:vertical}
 .order-form .btn{background:#fff;color:var(--wine-dark);width:100%}
+.order-form .btn:disabled{opacity:.5;cursor:not-allowed}
 .selected-price{background:#fff;color:var(--wine-dark);padding:11px;border-radius:10px;font-weight:bold;text-align:center;font-size:14px}
 .notice{font-size:11px;color:#f0dfe4;margin-top:10px}
 .faq{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
@@ -125,7 +129,7 @@ footer small{color:#d7c2ca}
 
 <section class="section" id="products">
 <div class="section-head">
-<div><h2>محصولات ماه شاپینگ</h2><p>محصولات موجود فروشگاه با عکس، قیمت و مشخصات؛ موجودی پیش از سفارش تأیید می‌شود.</p></div>
+<div><h2>محصولات ماه شاپینگ</h2><p>محصولات فعال فروشگاه با عکس، قیمت و مشخصات؛ موجودی پیش از سفارش تأیید می‌شود.</p></div>
 </div>
 <div class="filters" role="group" aria-label="فیلتر محصولات">
 <button class="filter active" data-filter="all">همه محصولات</button>
@@ -162,10 +166,10 @@ footer small{color:#d7c2ca}
 </select>
 <input id="productCode" placeholder="کد محصول (مثلاً MS-001)" aria-label="کد محصول" readonly>
 <div class="selected-price" id="selectedPrice">ابتدا از فهرست محصولات یک لباس را انتخاب کن.</div>
-<input id="orderQuantity" type="number" min="1" step="1" value="1" required placeholder="تعداد" aria-label="تعداد سفارش">
+<input id="orderQuantity" type="number" min="1" step="1" value="1" required placeholder="تعداد" aria-label="تعداد سفارش" disabled>
 <div class="selected-price" id="totalPrice">مجموع قیمت: —</div>
 <textarea id="orderDetails" placeholder="رنگ، سایز و توضیحات" aria-label="توضیحات سفارش"></textarea>
-<button class="btn" type="submit">ادامه سفارش در واتساپ</button>
+<button class="btn" id="submitOrder" type="submit" disabled>ادامه سفارش در واتساپ</button>
 </form>
 <div class="notice">سفارش تا زمانی که موجودی، قیمت و شیوه ارسال تأیید نشود، قطعی نیست.</div>
 </div>
@@ -203,6 +207,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
 let selectedProductPrice = null;
 let selectedProductName = "";
 let selectedProductCode = "";
+let selectedProductStock = 0;
 
 function formatMoney(value) {
   return Number(value).toLocaleString("fa-AF");
@@ -214,29 +219,51 @@ function openWhatsApp(message) {
 }
 
 function updateTotalPrice() {
-  const quantity = Number(document.getElementById("orderQuantity").value);
+  const quantityInput = document.getElementById("orderQuantity");
+  const quantity = Number(quantityInput.value);
   const totalBox = document.getElementById("totalPrice");
 
-  if (!Number.isFinite(selectedProductPrice) || !Number.isInteger(quantity) || quantity < 1) {
-    totalBox.textContent = "مجموع قیمت: —";
-    return;
+  if (
+    !Number.isFinite(selectedProductPrice) ||
+    !Number.isInteger(quantity) ||
+    quantity < 1 ||
+    quantity > selectedProductStock
+  ) {
+    totalBox.textContent = "تعداد باید بین ۱ تا " + selectedProductStock + " باشد.";
+    return false;
   }
 
   totalBox.textContent = "مجموع قیمت: " + formatMoney(selectedProductPrice * quantity) + " افغانی";
+  return true;
 }
 
-function orderProduct(name, code, price) {
+function orderProduct(name, code, price, stock) {
+  const availableStock = Number(stock);
+
+  if (!Number.isInteger(availableStock) || availableStock <= 0) {
+    alert("متأسفانه این محصول فعلاً ناموجود است.");
+    return;
+  }
+
   selectedProductName = name || "";
   selectedProductCode = code || "";
   selectedProductPrice = Number(price);
+  selectedProductStock = availableStock;
 
   document.getElementById("productCode").value = selectedProductCode;
   document.getElementById("orderDetails").value = "محصول: " + selectedProductName;
-  document.getElementById("orderQuantity").value = 1;
+
+  const quantityInput = document.getElementById("orderQuantity");
+  quantityInput.disabled = false;
+  quantityInput.min = "1";
+  quantityInput.max = String(selectedProductStock);
+  quantityInput.value = "1";
+
+  document.getElementById("submitOrder").disabled = false;
 
   document.getElementById("selectedPrice").textContent =
     Number.isFinite(selectedProductPrice) && selectedProductPrice >= 0
-      ? "قیمت واحد: " + formatMoney(selectedProductPrice) + " افغانی"
+      ? "قیمت واحد: " + formatMoney(selectedProductPrice) + " افغانی | موجودی: " + selectedProductStock + " عدد"
       : "قیمت این محصول مشخص نیست؛ لطفاً تماس بگیرید.";
 
   updateTotalPrice();
@@ -244,7 +271,16 @@ function orderProduct(name, code, price) {
   document.getElementById("customerName").focus({preventScroll:true});
 }
 
-document.getElementById("orderQuantity").addEventListener("input", updateTotalPrice);
+document.getElementById("orderQuantity").addEventListener("input", function() {
+  const quantity = Number(this.value);
+
+  if (Number.isInteger(quantity) && quantity > selectedProductStock && selectedProductStock > 0) {
+    this.value = selectedProductStock;
+    alert("حداکثر موجودی این محصول " + selectedProductStock + " عدد است.");
+  }
+
+  updateTotalPrice();
+});
 
 document.getElementById("orderForm").addEventListener("submit", function(e) {
   e.preventDefault();
@@ -265,8 +301,8 @@ document.getElementById("orderForm").addEventListener("submit", function(e) {
     return;
   }
 
-  if (!Number.isInteger(quantity) || quantity < 1) {
-    alert("لطفاً تعداد معتبر وارد کنید.");
+  if (!Number.isInteger(quantity) || quantity < 1 || quantity > selectedProductStock) {
+    alert("تعداد سفارش نمی‌تواند بیشتر از موجودی فعلی (" + selectedProductStock + " عدد) باشد.");
     return;
   }
 
@@ -317,6 +353,10 @@ function makeProductCard(product) {
   card.className = "product";
   card.dataset.category = getCategoryKey(product.category);
 
+  const stock = Number(product.stock);
+  const validStock = Number.isInteger(stock) && stock >= 0;
+  const available = validStock && stock > 0;
+
   const imageWrap = document.createElement("div");
   imageWrap.className = "product-image";
 
@@ -341,6 +381,12 @@ function makeProductCard(product) {
   meta.className = "meta";
   meta.textContent = "کد: " + safeText(product.code) + " | رنگ: " + (safeText(product.color) || "تعیین نشده");
 
+  const stockLabel = document.createElement("div");
+  stockLabel.className = available ? "stock-label" : "stock-label sold-out";
+  stockLabel.textContent = available
+    ? "موجودی: " + stock + " عدد"
+    : "ناموجود";
+
   const row = document.createElement("div");
   row.className = "price-row";
 
@@ -353,11 +399,17 @@ function makeProductCard(product) {
   const button = document.createElement("button");
   button.className = "order-small";
   button.type = "button";
-  button.textContent = "سفارش";
-  button.addEventListener("click", () => orderProduct(product.name, product.code, product.price));
+  button.textContent = available ? "سفارش" : "ناموجود";
+  button.disabled = !available;
+
+  if (available) {
+    button.addEventListener("click", () =>
+      orderProduct(product.name, product.code, product.price, stock)
+    );
+  }
 
   row.append(price, button);
-  info.append(title, meta, row);
+  info.append(title, meta, stockLabel, row);
   card.append(imageWrap, info);
   return card;
 }
@@ -384,7 +436,7 @@ async function loadProducts() {
   grid.innerHTML = "";
   if (!data || data.length === 0) {
     empty.style.display = "block";
-    empty.textContent = "در حال حاضر محصول فعالی برای نمایش موجود نیست.";
+    empty.textContent = "در حال حاضر محصول فعالی برای نمایش وجود ندارد.";
     return;
   }
 
