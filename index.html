@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
@@ -112,9 +111,9 @@ document.getElementById("orderForm").addEventListener("submit",async function(e)
  button.disabled=true;button.textContent="در حال ثبت سفارش...";
  try{
   const orderData={customer_name:name,customer_phone:phone,city:city,product_code:selectedProductCode,details:details,status:"جدید",total_amount:total,quantity:quantity};
-  const {data,error}=await supabaseClient.from("orders").insert([orderData]).select("id").single();
-  if(error){console.error(error);if(whatsappWindow&&!whatsappWindow.closed)whatsappWindow.close();alert("ثبت سفارش در سیستم موفق نشد. لطفاً اتصال اینترنت را بررسی کنید و دوباره تلاش نمایید.\n\nسفارش شما هنوز ثبت نشده است.");return}
-  const finalMessage=message+(data&&data.id?"\n\nشماره سفارش: "+data.id:""),url="https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(finalMessage);
+  const {error}=await supabaseClient.from("orders").insert([orderData]);
+  if(error){console.error("Order insert failed:",error);if(whatsappWindow&&!whatsappWindow.closed)whatsappWindow.close();alert("ثبت سفارش در سیستم موفق نشد. لطفاً دوباره تلاش کنید یا از طریق واتساپ با فروشگاه تماس بگیرید.\n\nسفارش شما هنوز ثبت نشده است.");return}
+  const url="https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(message);
   if(whatsappWindow&&!whatsappWindow.closed)whatsappWindow.location.href=url;else window.location.href=url;
  }catch(err){console.error(err);if(whatsappWindow&&!whatsappWindow.closed)whatsappWindow.close();alert("در ثبت سفارش مشکل پیش آمد. لطفاً دوباره تلاش کنید.")}
  finally{button.disabled=false;button.textContent="ادامه سفارش در واتساپ"}
