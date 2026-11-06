@@ -9,14 +9,14 @@
 <style>
 body{font-family:Tahoma,Arial;background:#f7f2ed;color:#38252b;margin:0;padding:18px}
 main{max-width:750px;margin:25px auto;background:white;padding:22px;border-radius:14px}
-h2{color:#762d45}
+h2,h3{color:#762d45}
 input,textarea,select,button{box-sizing:border-box;width:100%;padding:12px;margin:7px 0 14px;border:1px solid #ddd;border-radius:8px;font-size:15px}
 button{background:#762d45;color:white;border:0;cursor:pointer;font-weight:bold}
 button:disabled{opacity:.5;cursor:not-allowed}
 button.secondary{background:#777}
 button.danger{background:#a33}
 button.stock-btn{background:#23734e}
-.product{border:1px solid #eee;padding:12px;margin:12px 0;border-radius:10px}
+.product,.order{border:1px solid #eee;padding:14px;margin:12px 0;border-radius:10px}
 .product img{width:90px;height:90px;object-fit:cover;border-radius:8px}
 .row{display:flex;gap:10px;align-items:center}
 .row button{width:auto;flex:1}
@@ -25,6 +25,11 @@ button.stock-btn{background:#23734e}
 .stock-status{font-weight:bold}
 .stock-zero{color:#a00}
 .stock-positive{color:#176b35}
+.order p{line-height:1.8;margin:6px 0}
+.order strong{color:#762d45}
+.order select{margin-bottom:5px}
+.whatsapp{display:block;text-align:center;text-decoration:none;background:#16834b;color:white;padding:12px;border-radius:8px;margin-top:8px;font-weight:bold}
+hr{margin:25px 0;border:0;border-top:1px solid #ddd}
 </style>
 </head>
 <body>
@@ -39,10 +44,23 @@ button.stock-btn{background:#23734e}
 </section>
 
 <section id="panel" class="hidden">
+
 <div class="row">
-<h3>مدیریت محصولات</h3>
+<h3>مدیریت فروشگاه</h3>
 <button class="secondary" onclick="logout()">خروج</button>
 </div>
+
+<div id="message"></div>
+
+<hr>
+
+<h3>مدیریت سفارش‌های مشتریان</h3>
+<button onclick="loadOrders()">تازه‌سازی سفارش‌ها</button>
+<div id="orders">در حال دریافت سفارش‌ها...</div>
+
+<hr>
+
+<h3>مدیریت محصولات</h3>
 
 <form id="productForm">
 <input type="hidden" id="productId">
@@ -79,11 +97,12 @@ button.stock-btn{background:#23734e}
 <button type="button" class="secondary" onclick="clearForm()">پاک کردن فورم</button>
 </form>
 
-<div id="message"></div>
 <hr>
+
 <h3>فهرست محصولات</h3>
-<button class="secondary" onclick="loadProducts()">تازه‌سازی فهرست</button>
+<button class="secondary" onclick="loadProducts()">تازه‌سازی فهرست محصولات</button>
 <div id="products"></div>
+
 </section>
 </main>
 
@@ -94,6 +113,14 @@ const ADMIN_UID = "3b7aba09-b373-4308-b1c0-4b2afc1f128e";
 
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = id => document.getElementById(id);
+
+const ORDER_STATUSES = [
+  "جدید",
+  "تأییدشده",
+  "آماده ارسال",
+  "ارسال‌شده",
+  "لغوشده"
+];
 
 function message(text,error=false){
   $("message").textContent=text;
@@ -128,12 +155,13 @@ async function login(){
     return;
   }
 
-  showPanel();
+  await showPanel();
 }
 
 async function showPanel(){
   $("login").classList.add("hidden");
   $("panel").classList.remove("hidden");
+  await loadOrders();
   await loadProducts();
 }
 
@@ -142,6 +170,137 @@ async function logout(){
   $("panel").classList.add("hidden");
   $("login").classList.remove("hidden");
 }
+
+function safeText(value){
+  return value===null||value===undefined||value===""?"-":String(value);
+}
+
+/* مدیریت سفارش‌ها */
+
+async function loadOrders(){
+  $("orders").textContent="در حال دریافت سفارش‌ها...";
+
+  const {data,error}=await db.from("orders")
+    .select("*")
+    .order("id",{ascending:false});
+
+  if(error){
+    $("orders").textContent="خطا در دریافت سفارش‌ها: "+error.message;
+    return;
+  }
+
+  $("orders").innerHTML="";
+
+  if(!data||data.length===0){
+    $("orders").textContent="هنوز سفارشی ثبت نشده است.";
+    return;
+  }
+
+  data.forEach(order=>{
+    const div=document.createElement("div");
+    div.className="order";
+
+    const heading=document.createElement("h3");
+    heading.textContent="سفارش شماره "+order.id;
+
+    const fields=[
+      ["نام مشتری",order.customer_name],
+      ["شماره تماس",order.customer_phone],
+      ["شهر",order.city],
+      ["کد محصول",order.product_code],
+      ["تعداد",order.quantity+" عدد"],
+      ["مبلغ کل",order.total_amount+" افغانی"],
+      ["توضیحات",order.details],
+      ["وضعیت فعلی",order.status]
+    ];
+
+    div.appendChild(heading);
+
+    fields.forEach(([label,value])=>{
+      const p=document.createElement("p");
+      const strong=document.createElement("strong");
+      strong.textContent=label+": ";
+      p.append(strong,document.createTextNode(safeText(value)));
+      div.appendChild(p);
+    });
+
+    const label=document.createElement("label");
+    label.textContent="تغییر وضعیت سفارش";
+
+    const select=document.createElement("select");
+
+    ORDER_STATUSES.forEach(status=>{
+      const option=document.createElement("option");
+      option.value=status;
+      option.textContent=status;
+      if(order.status===status) option.selected=true;
+      select.appendChild(option);
+    });
+
+    if(order.status&&!ORDER_STATUSES.includes(order.status)){
+      const option=document.createElement("option");
+      option.value=order.status;
+      option.textContent=order.status;
+      option.selected=true;
+      select.appendChild(option);
+    }
+
+    const save=document.createElement("button");
+    save.textContent="ذخیره وضعیت سفارش";
+    save.onclick=()=>updateOrderStatus(order.id,select.value,save);
+
+    const phone=String(order.customer_phone||"").replace(/\D/g,"");
+    const wa=document.createElement("a");
+    wa.className="whatsapp";
+    wa.target="_blank";
+    wa.rel="noopener";
+    wa.textContent="تماس با مشتری در واتساپ";
+    wa.href="https://wa.me/"+phone;
+
+    div.append(label,select,save,wa);
+    $("orders").appendChild(div);
+  });
+}
+
+async function updateOrderStatus(id,status,button){
+  if(!ORDER_STATUSES.includes(status)){
+    alert("وضعیت سفارش معتبر نیست.");
+    return;
+  }
+
+  const confirmed=confirm(
+    "آیا می‌خواهید وضعیت سفارش شماره "+id+
+    " به «"+status+"» تغییر کند؟"
+  );
+
+  if(!confirmed) return;
+
+  button.disabled=true;
+  button.textContent="در حال ذخیره...";
+
+  const {data,error}=await db.from("orders")
+    .update({status:status})
+    .eq("id",id)
+    .select();
+
+  button.disabled=false;
+  button.textContent="ذخیره وضعیت سفارش";
+
+  if(error){
+    message("خطا در تغییر وضعیت سفارش: "+error.message,true);
+    return;
+  }
+
+  if(!data||data.length===0){
+    message("وضعیت تغییر نکرد. دسترسی مدیر را بررسی کنید.",true);
+    return;
+  }
+
+  message("وضعیت سفارش شماره "+id+" با موفقیت تغییر کرد.");
+  await loadOrders();
+}
+
+/* مدیریت محصولات */
 
 function clearForm(){
   $("productForm").reset();
@@ -266,7 +425,8 @@ async function deductStock(p){
   const newStock=currentStock-quantity;
 
   const confirmed=confirm(
-    "موجودی جدید این محصول "+newStock+" عدد خواهد شد.\nآیا تأیید می‌کنید؟"
+    "موجودی جدید این محصول "+newStock+
+    " عدد خواهد شد.\nآیا تأیید می‌کنید؟"
   );
 
   if(!confirmed) return;
@@ -396,7 +556,7 @@ async function toggleProduct(p){
   const {data:{session}}=await db.auth.getSession();
 
   if(session&&session.user.id===ADMIN_UID){
-    showPanel();
+    await showPanel();
   }
 })();
 </script>
