@@ -11,7 +11,7 @@ export default async (request: Request, context: any) => {
   if (!isCrawler) return context.next();
 
   const supabaseUrl = "https://zzhldihcsluaqrorepyk.supabase.co";
-  const supabaseKey = "sb_publishable_AG8BoMnbpBkpyn-ZuxrcaC_CJx5HIOo";
+  const supabaseKey = "sb_publishable_AG8BoMnbpBkpyn-ZuxrcaA_CJx5HIOo";
 
   const response = await fetch(
     `${supabaseUrl}/rest/v1/products?code=eq.${encodeURIComponent(code)}&is_active=eq.true&select=name,description,image_url,price,code`,
